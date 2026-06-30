@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useAppStore } from '@/stores/use-app-store'
 import {
   Accordion,
@@ -12,10 +12,16 @@ import { Progress } from '@/components/ui/progress'
 import { DemandCard } from '@/components/demands/DemandCard'
 import { DemandDrawer } from '@/components/demands/DemandDrawer'
 import { Demand } from '@/lib/types'
+import { getDirectReports } from '@/lib/hierarchy'
 
 export default function TeamDemands() {
   const { users, demands, currentUser } = useAppStore()
   const [selectedDemand, setSelectedDemand] = useState<Demand | null>(null)
+
+  const visibleUsers = useMemo(() => {
+    if (!currentUser) return []
+    return getDirectReports(currentUser.id, users)
+  }, [currentUser, users])
 
   if (currentUser?.role === 'analyst') {
     return (
@@ -25,19 +31,10 @@ export default function TeamDemands() {
     )
   }
 
-  // Determine hierarchy based on current user
-  let visibleUsers = users.filter((u) => u.managerId === currentUser?.id)
-
-  // If director, maybe see managers and their reports. For simplicity, show direct reports (Managers)
-  if (currentUser?.role === 'director') {
-    visibleUsers = users.filter((u) => u.managerId === currentUser?.id)
-  }
-
   const getMetrics = (userId: string) => {
-    // If manager, get their own and their reports' demands. Simplified to direct assignee.
     const userDemands = demands.filter((d) => d.assigneeId === userId)
     const total = userDemands.length
-    const done = userDemands.filter((d) => d.status === 'done').length
+    const done = userDemands.filter((d) => d.status === 'concluido').length
     const progress = total === 0 ? 0 : Math.round((done / total) * 100)
     return { total, done, progress, demands: userDemands }
   }

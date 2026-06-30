@@ -4,25 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Calendar, AlertCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAppStore } from '@/stores/use-app-store'
-
-const statusConfig = {
-  todo: {
-    label: 'A Fazer',
-    color: 'bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
-  },
-  'in-progress': {
-    label: 'Em Progresso',
-    color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300',
-  },
-  done: {
-    label: 'Concluído',
-    color: 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300',
-  },
-  blocked: {
-    label: 'Bloqueado',
-    color: 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300',
-  },
-}
+import { STATUS_CONFIG } from '@/lib/status-config'
 
 const priorityConfig = {
   low: { label: 'Baixa', color: 'text-slate-500' },
@@ -33,6 +15,7 @@ const priorityConfig = {
 export function DemandCard({ demand, onClick }: { demand: Demand; onClick?: () => void }) {
   const { users } = useAppStore()
   const assignee = users.find((u) => u.id === demand.assigneeId)
+  const statusConfig = STATUS_CONFIG[demand.status]
 
   return (
     <Card
@@ -40,12 +23,9 @@ export function DemandCard({ demand, onClick }: { demand: Demand; onClick?: () =
       onClick={onClick}
     >
       <div className="flex justify-between items-start mb-2">
-        <Badge
-          className={cn('font-medium', statusConfig[demand.status].color)}
-          variant="secondary"
-          disableAnimation
-        >
-          {statusConfig[demand.status].label}
+        <Badge className={cn('font-medium border', statusConfig.badgeClass)} variant="secondary">
+          <span className="mr-1">{statusConfig.emoji}</span>
+          {statusConfig.label}
         </Badge>
         {demand.priority === 'high' && <AlertCircle className="w-4 h-4 text-red-500" />}
       </div>

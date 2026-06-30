@@ -7,7 +7,6 @@ import {
 } from '@/components/ui/sheet'
 import { Demand, Status } from '@/lib/types'
 import { useAppStore } from '@/stores/use-app-store'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Calendar, User, Clock, AlertTriangle } from 'lucide-react'
 import {
@@ -17,6 +16,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { STATUS_CONFIG, STATUS_ORDER } from '@/lib/status-config'
+import { cn } from '@/lib/utils'
 
 interface DemandDrawerProps {
   demand: Demand | null
@@ -30,6 +31,7 @@ export function DemandDrawer({ demand, open, onOpenChange }: DemandDrawerProps) 
   if (!demand) return null
 
   const assignee = users.find((u) => u.id === demand.assigneeId)
+  const statusConfig = STATUS_CONFIG[demand.status]
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -37,8 +39,12 @@ export function DemandDrawer({ demand, open, onOpenChange }: DemandDrawerProps) 
         <SheetHeader className="mb-6">
           <div className="flex items-center gap-2 mb-2">
             <Badge variant="outline">{demand.priority.toUpperCase()}</Badge>
-            <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20">
-              {demand.status.replace('-', ' ').toUpperCase()}
+            <Badge
+              variant="secondary"
+              className={cn('hover:bg-transparent border', statusConfig.badgeClass)}
+            >
+              <span className="mr-1">{statusConfig.emoji}</span>
+              {statusConfig.label}
             </Badge>
           </div>
           <SheetTitle className="text-xl">{demand.title}</SheetTitle>
@@ -83,19 +89,20 @@ export function DemandDrawer({ demand, open, onOpenChange }: DemandDrawerProps) 
                 <SelectValue placeholder="Selecione o status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="todo">A Fazer</SelectItem>
-                <SelectItem value="in-progress">Em Progresso</SelectItem>
-                <SelectItem value="done">Concluído</SelectItem>
-                <SelectItem value="blocked">Bloqueado</SelectItem>
+                {STATUS_ORDER.map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {STATUS_CONFIG[status].emoji} {STATUS_CONFIG[status].label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
 
-          {demand.status === 'blocked' && (
-            <div className="bg-destructive/10 text-destructive p-3 rounded-lg flex gap-3 items-start">
-              <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
+          {demand.status === 'aguardando' && (
+            <div className="bg-danger/10 text-danger-foreground p-3 rounded-lg flex gap-3 items-start">
+              <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5 text-danger" />
               <p className="text-sm">
-                Esta demanda está bloqueada. Entre em contato com seu gestor se precisar de ajuda.
+                Esta demanda está aguardando. Entre em contato com seu gestor se precisar de ajuda.
               </p>
             </div>
           )}

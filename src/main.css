@@ -27,11 +27,17 @@
     --ring: 19 82% 62%;
     --radius: 0.75rem;
 
-    /* Status Colors */
-    --status-todo: 210 20% 90%;
-    --status-in-progress: 214 100% 50%;
-    --status-done: 142 76% 36%;
-    --status-blocked: 0 84% 60%;
+    /* Semantic Status Colors */
+    --color-success: 142 76% 36%;
+    --color-success-fg: 142 70% 22%;
+    --color-warning: 45 93% 47%;
+    --color-warning-fg: 40 85% 28%;
+    --color-danger: 0 84% 60%;
+    --color-danger-fg: 0 75% 38%;
+    --color-inactive: 0 0% 40%;
+    --color-inactive-fg: 0 0% 25%;
+    --text-muted: 0 0% 45%;
+    --theme-dark: 19 82% 70%;
   }
 
   .dark {
@@ -46,7 +52,7 @@
     --secondary: 19 60% 55%; /* #d17145 */
     --secondary-foreground: 0 0% 100%;
     --muted: 0 0% 30%;
-    --muted-foreground: 0 0% 70%; /* #d4d4d4 approx */
+    --muted-foreground: 0 0% 83%; /* #d4d4d4 */
     --accent: 19 82% 20%;
     --accent-foreground: 19 82% 80%;
     --destructive: 0 62.8% 30.6%;
@@ -54,6 +60,16 @@
     --border: 19 82% 35%; /* Subtler version of #f19d76 for borders */
     --input: 0 0% 30%;
     --ring: 19 82% 62%;
+    --color-success: 142 70% 45%;
+    --color-success-fg: 142 70% 80%;
+    --color-warning: 45 90% 55%;
+    --color-warning-fg: 45 90% 80%;
+    --color-danger: 0 72% 55%;
+    --color-danger-fg: 0 72% 80%;
+    --color-inactive: 0 0% 50%;
+    --color-inactive-fg: 0 0% 75%;
+    --text-muted: 0 0% 70%;
+    --theme-dark: 19 82% 70%;
   }
 
   * {

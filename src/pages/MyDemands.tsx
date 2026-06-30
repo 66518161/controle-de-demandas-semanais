@@ -6,12 +6,13 @@ import { Demand } from '@/lib/types'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { LayoutList, LayoutGrid } from 'lucide-react'
 
-const COLUMNS = ['todo', 'in-progress', 'done', 'blocked'] as const
+const COLUMNS = ['nao-iniciado', 'em-andamento', 'aguardando', 'concluido', 'cancelado'] as const
 const COL_TITLES = {
-  todo: 'A Fazer',
-  'in-progress': 'Em Progresso',
-  done: 'Concluído',
-  blocked: 'Bloqueado',
+  'nao-iniciado': 'Não Iniciado',
+  'em-andamento': 'Em Andamento',
+  aguardando: 'Aguardando',
+  concluido: 'Concluído',
+  cancelado: 'Cancelado',
 }
 
 export default function MyDemands() {

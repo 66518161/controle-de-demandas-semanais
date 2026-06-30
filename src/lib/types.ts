@@ -1,5 +1,5 @@
 export type Role = 'analyst' | 'manager' | 'director'
-export type Status = 'todo' | 'in-progress' | 'done' | 'blocked'
+export type Status = 'nao-iniciado' | 'em-andamento' | 'aguardando' | 'concluido' | 'cancelado'
 export type Priority = 'low' | 'medium' | 'high'
 
 export interface User {

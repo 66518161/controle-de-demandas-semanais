@@ -27,6 +27,23 @@ export default {
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
+        success: {
+          DEFAULT: 'hsl(var(--color-success))',
+          foreground: 'hsl(var(--color-success-fg))',
+        },
+        warning: {
+          DEFAULT: 'hsl(var(--color-warning))',
+          foreground: 'hsl(var(--color-warning-fg))',
+        },
+        danger: {
+          DEFAULT: 'hsl(var(--color-danger))',
+          foreground: 'hsl(var(--color-danger-fg))',
+        },
+        inactive: {
+          DEFAULT: 'hsl(var(--color-inactive))',
+          foreground: 'hsl(var(--color-inactive-fg))',
+        },
+        themeDark: 'hsl(var(--theme-dark))',
         ring: 'hsl(var(--ring))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
