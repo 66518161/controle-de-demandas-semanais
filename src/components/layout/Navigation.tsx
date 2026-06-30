@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { Home, ListTodo, Users, UserCircle } from 'lucide-react'
+import { Home, ListTodo, Users, UserCircle, MessageCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAppStore } from '@/stores/use-app-store'
 
@@ -10,6 +10,7 @@ export function Navigation({ isMobile = false }: { isMobile?: boolean }) {
   const navItems = [
     { name: 'Painel', href: '/', icon: Home, visible: true },
     { name: 'Minhas Demandas', href: '/demands', icon: ListTodo, visible: true },
+    { name: 'Chat IA', href: '/chat', icon: MessageCircle, visible: true },
     { name: 'Equipe', href: '/team', icon: Users, visible: currentUser?.role !== 'analyst' },
     { name: 'Perfil', href: '/profile', icon: UserCircle, visible: true },
   ]

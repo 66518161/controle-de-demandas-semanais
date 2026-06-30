@@ -1,5 +1,4 @@
-import { useEffect } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet, useLocation, Navigate } from 'react-router-dom'
 import { Header } from './layout/Header'
 import { Navigation } from './layout/Navigation'
 import { useAppStore } from '@/stores/use-app-store'
@@ -7,14 +6,10 @@ import { AiTaskDialog } from './ai-assistant/AiTaskDialog'
 import { Dialog } from './ui/dialog'
 
 export default function Layout() {
-  const { theme } = useAppStore()
+  const isAuthenticated = useAppStore((s) => s.isAuthenticated)
   const location = useLocation()
 
-  useEffect(() => {
-    const root = window.document.documentElement
-    root.classList.remove('light', 'dark')
-    root.classList.add(theme)
-  }, [theme])
+  if (!isAuthenticated) return <Navigate to="/login" replace />
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300">
@@ -27,7 +22,6 @@ export default function Layout() {
         <Navigation isMobile />
       </div>
 
-      {/* Mobile Floating Action Button */}
       <div className="md:hidden fixed bottom-20 right-4 z-40">
         <Dialog>
           <AiTaskDialog isMobileFab />

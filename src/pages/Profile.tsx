@@ -3,9 +3,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Settings, LogOut } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 export default function Profile() {
-  const { currentUser } = useAppStore()
+  const { currentUser, logout } = useAppStore()
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    logout()
+    navigate('/login')
+  }
 
   return (
     <div className="max-w-2xl mx-auto space-y-6 animate-fade-in-up">
@@ -43,9 +50,9 @@ export default function Profile() {
 
           <div className="mt-8 pt-6 border-t border-border flex justify-end">
             <Button
-              variant="destructive"
               variant="ghost"
               className="text-destructive hover:bg-destructive/10"
+              onClick={handleLogout}
             >
               <LogOut className="w-4 h-4 mr-2" /> Sair da Conta
             </Button>

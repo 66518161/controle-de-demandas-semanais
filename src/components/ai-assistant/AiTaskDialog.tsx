@@ -13,45 +13,9 @@ import { useAppStore } from '@/stores/use-app-store'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { toast } from '@/hooks/use-toast'
-import { Status, Priority } from '@/lib/types'
 import { STATUS_CONFIG } from '@/lib/status-config'
 import { cn } from '@/lib/utils'
-
-interface ParsedTask {
-  title: string
-  priority: Priority
-  dueDate: string
-  status: Status
-}
-
-function parseTasksFromText(text: string): ParsedTask[] {
-  const lines = text
-    .split(/[,\n;]/)
-    .map((l) => l.trim())
-    .filter(Boolean)
-  const priorities: Priority[] = ['high', 'medium', 'low']
-
-  return lines.slice(0, 6).map((line, idx) => {
-    let status: Status = 'nao-iniciado'
-
-    if (/terminad|feit|conclu[ií]d|pront/i.test(line)) {
-      status = 'concluido'
-    } else if (/fazend|progress|andament|trabalh|desenvolv/i.test(line)) {
-      status = 'em-andamento'
-    } else if (/esper|aguard|bloque|pend|terceir/i.test(line)) {
-      status = 'aguardando'
-    } else if (/cancel|desist|suspend/i.test(line)) {
-      status = 'cancelado'
-    }
-
-    return {
-      title: line.charAt(0).toUpperCase() + line.slice(1),
-      priority: priorities[idx % 3],
-      dueDate: '2023-10-27',
-      status,
-    }
-  })
-}
+import { parseTasksFromText, ParsedTask } from '@/lib/llm-parser'
 
 export function AiTaskDialog({ isMobileFab = false }: { isMobileFab?: boolean }) {
   const [input, setInput] = useState('')
@@ -71,8 +35,11 @@ export function AiTaskDialog({ isMobileFab = false }: { isMobileFab?: boolean })
   const handleConfirm = () => {
     parsedTasks.forEach((task) => {
       addDemand({
-        ...task,
-        description: 'Gerado via IA',
+        title: task.title,
+        description: task.description,
+        status: task.status,
+        priority: task.priority,
+        dueDate: task.dueDate,
         assigneeId: currentUser!.id,
       })
     })

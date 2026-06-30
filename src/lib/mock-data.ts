@@ -4,12 +4,16 @@ export const MOCK_USERS: User[] = [
   {
     id: 'u1',
     name: 'Ana Diretora',
+    email: 'ana@demandflow.com',
+    password: '123456',
     role: 'director',
     avatarUrl: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=1',
   },
   {
     id: 'u2',
     name: 'Carlos Gerente',
+    email: 'carlos@demandflow.com',
+    password: '123456',
     role: 'manager',
     managerId: 'u1',
     avatarUrl: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=2',
@@ -17,6 +21,8 @@ export const MOCK_USERS: User[] = [
   {
     id: 'u3',
     name: 'Beatriz Analista',
+    email: 'beatriz@demandflow.com',
+    password: '123456',
     role: 'analyst',
     managerId: 'u2',
     avatarUrl: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=3',
@@ -24,6 +30,8 @@ export const MOCK_USERS: User[] = [
   {
     id: 'u4',
     name: 'Diego Analista',
+    email: 'diego@demandflow.com',
+    password: '123456',
     role: 'analyst',
     managerId: 'u2',
     avatarUrl: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=4',

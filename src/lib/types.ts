@@ -5,9 +5,28 @@ export type Priority = 'low' | 'medium' | 'high'
 export interface User {
   id: string
   name: string
+  email: string
+  password: string
   role: Role
   avatarUrl?: string
   managerId?: string
+}
+
+export interface ChatMessage {
+  id: string
+  role: 'user' | 'assistant'
+  content: string
+  timestamp: string
+  parsedTasks?: ParsedTask[]
+  confirmed?: boolean
+}
+
+export interface ParsedTask {
+  title: string
+  description: string
+  priority: Priority
+  dueDate: string
+  status: Status
 }
 
 export interface Demand {

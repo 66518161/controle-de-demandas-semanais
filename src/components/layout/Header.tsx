@@ -1,4 +1,4 @@
-import { Moon, Sun, Plus, Bell, LayoutDashboard } from 'lucide-react'
+import { Moon, Sun, Plus, Bell, LayoutDashboard, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useAppStore } from '@/stores/use-app-store'
@@ -12,9 +12,16 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import { AiTaskDialog } from '../ai-assistant/AiTaskDialog'
+import { useNavigate } from 'react-router-dom'
 
 export function Header() {
-  const { theme, toggleTheme, currentUser, users, setCurrentUser } = useAppStore()
+  const { theme, toggleTheme, currentUser, users, setCurrentUser, logout } = useAppStore()
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    logout()
+    navigate('/login')
+  }
 
   return (
     <header className="sticky top-0 z-40 w-full glass h-16 flex items-center justify-between px-4 lg:px-8">
@@ -69,6 +76,10 @@ export function Header() {
                 {u.name} ({u.role})
               </DropdownMenuItem>
             ))}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleLogout} className="text-destructive">
+              <LogOut className="w-4 h-4 mr-2" /> Sair
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
