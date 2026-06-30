@@ -19,7 +19,7 @@ export function DemandCard({ demand, onClick }: { demand: Demand; onClick?: () =
 
   return (
     <Card
-      className="p-4 cursor-pointer hover:shadow-md transition-all hover:border-primary/50 group"
+      className="p-4 cursor-pointer hover:shadow-md transition-all hover:border-primary/40 border-border/60 group"
       onClick={onClick}
     >
       <div className="flex justify-between items-start mb-2">

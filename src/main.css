@@ -53,12 +53,12 @@
     --secondary-foreground: 0 0% 100%;
     --muted: 0 0% 30%;
     --muted-foreground: 0 0% 83%; /* #d4d4d4 */
-    --accent: 19 82% 20%;
-    --accent-foreground: 19 82% 80%;
+    --accent: 20 10% 20%; /* Muted warm gray for subtle dark mode accents */
+    --accent-foreground: 20 15% 75%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 19 82% 35%; /* Subtler version of #f19d76 for borders */
-    --input: 0 0% 30%;
+    --border: 0 0% 26%; /* Subtle neutral gray for professional dark mode borders */
+    --input: 0 0% 28%;
     --ring: 19 82% 62%;
     --color-success: 142 70% 45%;
     --color-success-fg: 142 70% 80%;
@@ -83,5 +83,8 @@
 @layer utilities {
   .glass {
     @apply bg-background/80 backdrop-blur-md border-b border-border;
+  }
+  .dark .glass {
+    @apply bg-background/85 border-b border-border/70;
   }
 }

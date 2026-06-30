@@ -61,7 +61,7 @@ export default function MyDemands() {
           {COLUMNS.map((col) => (
             <div
               key={col}
-              className="min-w-[300px] w-[300px] flex-shrink-0 flex flex-col bg-muted/30 rounded-xl p-4 snap-center border"
+              className="min-w-[300px] w-[300px] flex-shrink-0 flex flex-col bg-muted/30 rounded-xl p-4 snap-center border border-border/60"
             >
               <h3 className="font-semibold mb-4 text-sm uppercase tracking-wider text-muted-foreground">
                 {COL_TITLES[col]} ({myDemands.filter((d) => d.status === col).length})

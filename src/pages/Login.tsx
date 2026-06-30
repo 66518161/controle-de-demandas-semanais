@@ -149,7 +149,7 @@ export default function Login() {
               Entrar com Microsoft
             </Button>
 
-            <div className="mt-6 p-4 bg-muted/50 rounded-lg border border-border">
+            <div className="mt-6 p-4 bg-muted/50 rounded-lg border border-border/60">
               <p className="text-xs font-semibold text-muted-foreground mb-2">
                 Contas de demonstração:
               </p>
