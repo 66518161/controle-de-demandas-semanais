@@ -37,7 +37,7 @@ export function parseTasksFromText(text: string): ParsedTask[] {
       else if (/baixa/.test(p)) priority = 'low'
     }
 
-    const dateMatch = line.match(/(\d{1,2})[/\-](\d{1,2})/)
+    const dateMatch = line.match(/(\d{1,2})[/-](\d{1,2})/)
     let dueDate = '2024-10-27'
     if (dateMatch) {
       const day = dateMatch[1].padStart(2, '0')
