@@ -23,7 +23,7 @@ export default function MyDemands() {
   const myDemands = demands.filter((d) => d.assigneeId === currentUser?.id)
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto h-full flex flex-col">
+    <div className="space-y-6 max-w-6xl mx-auto h-full min-h-0 flex flex-col">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Minhas Demandas</h1>

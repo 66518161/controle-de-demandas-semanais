@@ -98,35 +98,37 @@ export function HierarchyManager() {
 
       <div className="space-y-2">
         <h3 className="font-semibold text-sm">Vínculos Atuais</h3>
-        {linkedUsers.length === 0 ? (
-          <p className="text-sm text-muted-foreground py-4 text-center bg-muted/30 rounded-lg">
-            Nenhum vínculo hierárquico definido.
-          </p>
-        ) : (
-          linkedUsers.map((user) => {
-            const manager = getManager(user.managerId!)
-            return (
-              <Card key={user.id} className="p-3 flex items-center gap-3">
-                <div className="flex-1 flex flex-wrap items-center gap-2 text-sm">
-                  <span className="font-medium">{user.name}</span>
-                  <Badge variant="outline" className="text-[10px]">
-                    {ROLE_LABELS[user.role]}
-                  </Badge>
-                  <ArrowRight className="w-4 h-4 text-muted-foreground mx-1" />
-                  <span className="text-muted-foreground">{manager?.name}</span>
-                  {manager && (
+        <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
+          {linkedUsers.length === 0 ? (
+            <p className="text-sm text-muted-foreground py-4 text-center bg-muted/30 rounded-lg">
+              Nenhum vínculo hierárquico definido.
+            </p>
+          ) : (
+            linkedUsers.map((user) => {
+              const manager = getManager(user.managerId!)
+              return (
+                <Card key={user.id} className="p-3 flex items-center gap-3">
+                  <div className="flex-1 flex flex-wrap items-center gap-2 text-sm">
+                    <span className="font-medium">{user.name}</span>
                     <Badge variant="outline" className="text-[10px]">
-                      {ROLE_LABELS[manager.role]}
+                      {ROLE_LABELS[user.role]}
                     </Badge>
-                  )}
-                </div>
-                <Button size="icon" variant="ghost" onClick={() => handleUnlink(user.id)}>
-                  <Unlink className="w-4 h-4 text-destructive" />
-                </Button>
-              </Card>
-            )
-          })
-        )}
+                    <ArrowRight className="w-4 h-4 text-muted-foreground mx-1" />
+                    <span className="text-muted-foreground">{manager?.name}</span>
+                    {manager && (
+                      <Badge variant="outline" className="text-[10px]">
+                        {ROLE_LABELS[manager.role]}
+                      </Badge>
+                    )}
+                  </div>
+                  <Button size="icon" variant="ghost" onClick={() => handleUnlink(user.id)}>
+                    <Unlink className="w-4 h-4 text-destructive" />
+                  </Button>
+                </Card>
+              )
+            })
+          )}
+        </div>
       </div>
     </div>
   )

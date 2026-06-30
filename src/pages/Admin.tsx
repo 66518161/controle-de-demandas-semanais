@@ -67,7 +67,7 @@ export default function Admin() {
               <Plus className="w-4 h-4" /> Novo Usuário
             </Button>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-2 max-h-[calc(100vh-22rem)] overflow-y-auto pr-1">
             {users.map((user) => (
               <Card key={user.id} className="p-4 flex items-center gap-4">
                 <Avatar className="w-10 h-10">

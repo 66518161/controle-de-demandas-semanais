@@ -48,7 +48,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4 relative">
+    <div className="h-screen overflow-y-auto flex items-center justify-center bg-background p-4 relative">
       <Button
         variant="ghost"
         size="icon"

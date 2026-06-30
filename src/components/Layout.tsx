@@ -12,11 +12,11 @@ export default function Layout() {
   if (!isAuthenticated) return <Navigate to="/login" replace />
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300">
+    <div className="h-screen overflow-hidden flex flex-col bg-background text-foreground transition-colors duration-300">
       <Header />
       <div className="flex flex-1 flex-col md:flex-row overflow-hidden relative">
         <Navigation />
-        <main className="flex-1 overflow-y-auto p-4 lg:p-8 pb-24 md:pb-8 animate-fade-in">
+        <main className="flex-1 min-h-0 overflow-y-auto p-4 lg:p-8 pb-24 md:pb-8 animate-fade-in">
           <Outlet key={location.pathname} />
         </main>
         <Navigation isMobile />

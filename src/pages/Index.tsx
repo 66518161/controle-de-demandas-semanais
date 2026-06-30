@@ -63,7 +63,7 @@ export default function Index() {
               {isDirector ? 'Gerentes Supervisionados' : 'Analistas da Equipe'}
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-3 max-h-80 overflow-y-auto">
             {subordinates.map((user) => {
               const userDemands = demands.filter((d) => d.assigneeId === user.id)
               const done = userDemands.filter((d) => d.status === 'concluido').length
@@ -101,7 +101,7 @@ export default function Index() {
           <CardHeader>
             <CardTitle className="text-lg">Demandas Recentes</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="max-h-72 overflow-y-auto">
             {relevantDemands.slice(0, 5).map((demand) => (
               <Link
                 key={demand.id}

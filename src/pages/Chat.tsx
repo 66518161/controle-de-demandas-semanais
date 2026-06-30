@@ -81,7 +81,7 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-8rem)] md:h-[calc(100vh-6rem)] max-w-3xl mx-auto">
+    <div className="flex flex-col h-full min-h-0 max-w-3xl mx-auto">
       <div className="mb-4">
         <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
           <Wand2 className="w-6 h-6 text-primary" />
