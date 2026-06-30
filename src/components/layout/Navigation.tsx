@@ -17,7 +17,12 @@ export function Navigation({ isMobile = false }: { isMobile?: boolean }) {
     },
     { name: 'Chat IA', href: '/chat', icon: MessageCircle, visible: true },
     { name: 'Equipe', href: '/team', icon: Users, visible: currentUser?.role !== 'analyst' },
-    { name: 'Admin', href: '/admin', icon: Shield, visible: currentUser?.role === 'director' },
+    {
+      name: 'Admin',
+      href: '/admin',
+      icon: Shield,
+      visible: currentUser?.role === 'director' || currentUser?.role === 'admin',
+    },
     { name: 'Perfil', href: '/profile', icon: UserCircle, visible: true },
   ]
 

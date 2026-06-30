@@ -14,11 +14,13 @@ const ROLE_LABELS: Record<Role, string> = {
   analyst: 'Analista',
   manager: 'Gerente',
   director: 'Diretor',
+  admin: 'Admin',
 }
 const ROLE_COLORS: Record<Role, string> = {
   analyst: 'bg-blue-500/15 text-blue-500 border-blue-500/30',
   manager: 'bg-orange-500/15 text-orange-500 border-orange-500/30',
   director: 'bg-purple-500/15 text-purple-500 border-purple-500/30',
+  admin: 'bg-emerald-500/15 text-emerald-500 border-emerald-500/30',
 }
 
 export default function Admin() {
@@ -26,9 +28,11 @@ export default function Admin() {
   const [editingUser, setEditingUser] = useState<User | null>(null)
   const [showForm, setShowForm] = useState(false)
 
-  if (currentUser?.role !== 'director') {
+  if (currentUser?.role !== 'director' && currentUser?.role !== 'admin') {
     return (
-      <div className="text-center py-12 text-muted-foreground">Acesso restrito a diretores.</div>
+      <div className="text-center py-12 text-muted-foreground">
+        Acesso restrito a diretores e administradores.
+      </div>
     )
   }
 
@@ -67,7 +71,7 @@ export default function Admin() {
               <Plus className="w-4 h-4" /> Novo Usuário
             </Button>
           </div>
-          <div className="space-y-2 max-h-[calc(100vh-22rem)] overflow-y-auto pr-1">
+          <div className="space-y-2 max-h-[calc(100vh-22rem)] overflow-y-auto custom-scrollbar pr-1">
             {users.map((user) => (
               <Card key={user.id} className="p-4 flex items-center gap-4">
                 <Avatar className="w-10 h-10">

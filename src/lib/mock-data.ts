@@ -59,6 +59,16 @@ export const MOCK_USERS: User[] = [
     managerId: 'u5',
     avatarUrl: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=6',
   },
+  {
+    id: 'u7',
+    name: 'Gabriel Admin',
+    email: 'gabriel@demandflow.com',
+    password: '123456',
+    role: 'admin',
+    managerId: 'u1',
+    microsoftId: 'ms-gabriel-007',
+    avatarUrl: 'https://img.usecurling.com/ppl/thumbnail?gender=male&seed=7',
+  },
 ]
 
 export const MOCK_DEMANDS: Demand[] = [

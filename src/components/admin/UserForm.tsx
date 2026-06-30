@@ -30,6 +30,7 @@ const ROLE_OPTIONS: { value: Role; label: string }[] = [
   { value: 'analyst', label: 'Analista' },
   { value: 'manager', label: 'Gerente' },
   { value: 'director', label: 'Diretor' },
+  { value: 'admin', label: 'Admin' },
 ]
 
 export function UserForm({ user, open, onOpenChange }: UserFormProps) {
@@ -56,7 +57,9 @@ export function UserForm({ user, open, onOpenChange }: UserFormProps) {
     }
   }, [user, open])
 
-  const possibleManagers = users.filter((u) => u.role === 'manager' || u.role === 'director')
+  const possibleManagers = users.filter(
+    (u) => u.role === 'manager' || u.role === 'director' || u.role === 'admin',
+  )
 
   const handleSubmit = () => {
     if (!name.trim() || !email.trim()) {
@@ -137,7 +140,7 @@ export function UserForm({ user, open, onOpenChange }: UserFormProps) {
               </SelectContent>
             </Select>
           </div>
-          {role !== 'director' && (
+          {role !== 'director' && role !== 'admin' && (
             <div className="space-y-2">
               <Label>Superior (Gestor/Diretor)</Label>
               <Select value={managerId} onValueChange={setManagerId}>
