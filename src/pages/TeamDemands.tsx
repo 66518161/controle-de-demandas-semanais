@@ -18,6 +18,8 @@ export default function TeamDemands() {
   const { users, demands, currentUser } = useAppStore()
   const [selectedDemand, setSelectedDemand] = useState<Demand | null>(null)
 
+  const isDirector = currentUser?.role === 'director'
+
   const visibleUsers = useMemo(() => {
     if (!currentUser) return []
     return getDirectReports(currentUser.id, users)
@@ -42,8 +44,14 @@ export default function TeamDemands() {
   return (
     <div className="space-y-6 max-w-4xl mx-auto animate-fade-in">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Demandas da Equipe</h1>
-        <p className="text-muted-foreground">Acompanhe a produtividade dos seus liderados.</p>
+        <h1 className="text-2xl font-bold tracking-tight">
+          {isDirector ? 'Demandas dos Gerentes' : 'Demandas da Equipe'}
+        </h1>
+        <p className="text-muted-foreground">
+          {isDirector
+            ? 'Acompanhe e gerencie as demandas dos seus gerentes.'
+            : 'Acompanhe a produtividade dos seus liderados.'}
+        </p>
       </div>
 
       <Accordion type="multiple" className="space-y-4">
@@ -108,6 +116,9 @@ export default function TeamDemands() {
         demand={selectedDemand}
         open={!!selectedDemand}
         onOpenChange={(open) => !open && setSelectedDemand(null)}
+        canEditStatus={!isDirector}
+        canEditPriority={isDirector}
+        canComment={true}
       />
     </div>
   )

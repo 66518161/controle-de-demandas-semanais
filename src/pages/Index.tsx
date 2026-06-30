@@ -1,114 +1,127 @@
-import { useMemo } from 'react'
-import { CheckCircle2, Clock, ListTodo, AlertOctagon } from 'lucide-react'
+import { useAppStore } from '@/stores/use-app-store'
 import { StatCard } from '@/components/dashboard/StatCard'
 import { ProductivityChart } from '@/components/dashboard/ProductivityChart'
-import { useAppStore } from '@/stores/use-app-store'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { STATUS_CONFIG } from '@/lib/status-config'
-import { getSubordinateIds } from '@/lib/hierarchy'
-import { cn } from '@/lib/utils'
+import { Progress } from '@/components/ui/progress'
+import { getDirectReports, getSubordinateIds } from '@/lib/hierarchy'
+import { ListTodo, CheckCircle2, Clock, AlertCircle } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 export default function Index() {
-  const { demands, currentUser, users } = useAppStore()
+  const { currentUser, demands, users } = useAppStore()
 
-  const userDemands = useMemo(
-    () => demands.filter((d) => d.assigneeId === currentUser?.id),
-    [demands, currentUser],
-  )
+  if (!currentUser) return null
 
-  const teamDemands = useMemo(() => {
-    if (!currentUser) return []
-    const subIds = getSubordinateIds(currentUser.id, users)
-    return demands.filter((d) => subIds.includes(d.assigneeId))
-  }, [demands, currentUser, users])
+  const isDirector = currentUser.role === 'director'
+  const subordinates = getDirectReports(currentUser.id, users)
+  const subordinateIds = getSubordinateIds(currentUser.id, users)
+  const relevantDemands = isDirector
+    ? demands.filter((d) => subordinateIds.includes(d.assigneeId))
+    : demands.filter((d) => d.assigneeId === currentUser.id)
 
-  const stats = {
-    total: userDemands.length,
-    emAndamento: userDemands.filter((d) => d.status === 'em-andamento').length,
-    concluido: userDemands.filter((d) => d.status === 'concluido').length,
-    aguardando: userDemands.filter((d) => d.status === 'aguardando').length,
+  const total = relevantDemands.length
+  const completed = relevantDemands.filter((d) => d.status === 'concluido').length
+  const inProgress = relevantDemands.filter((d) => d.status === 'em-andamento').length
+  const blocked = relevantDemands.filter((d) => d.status === 'aguardando').length
+
+  const roleLabels: Record<string, string> = {
+    analyst: 'Analista',
+    manager: 'Gerente',
+    director: 'Diretor',
   }
 
-  const teamBlocked = teamDemands.filter((d) => d.status === 'aguardando')
-
   return (
-    <div className="space-y-6 max-w-6xl mx-auto">
+    <div className="space-y-6 max-w-6xl mx-auto animate-fade-in">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">
-          Olá, {currentUser?.name.split(' ')[0]} 👋
-        </h1>
-        <p className="text-muted-foreground">Aqui está o resumo da sua semana.</p>
+        <h1 className="text-2xl font-bold tracking-tight">Painel</h1>
+        <p className="text-muted-foreground">
+          {isDirector
+            ? 'Visão geral global da equipe'
+            : 'Bem-vindo de volta! Aqui está seu resumo.'}
+        </p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
-          title="Total"
-          value={stats.total}
+          title={isDirector ? 'Total da Equipe' : 'Minhas Demandas'}
+          value={total}
           icon={ListTodo}
-          className="animate-fade-in-up"
-          style={{ animationDelay: '0ms' }}
         />
-        <StatCard
-          title="Em Andamento"
-          value={stats.emAndamento}
-          icon={Clock}
-          className="animate-fade-in-up"
-          style={{ animationDelay: '100ms' }}
-        />
-        <StatCard
-          title="Concluídas"
-          value={stats.concluido}
-          icon={CheckCircle2}
-          className="animate-fade-in-up"
-          style={{ animationDelay: '200ms' }}
-        />
-        <StatCard
-          title="Aguardando"
-          value={stats.aguardando}
-          icon={AlertOctagon}
-          className="animate-fade-in-up border-danger/50"
-          style={{ animationDelay: '300ms' }}
-        />
+        <StatCard title="Concluídas" value={completed} icon={CheckCircle2} />
+        <StatCard title="Em Andamento" value={inProgress} icon={Clock} />
+        <StatCard title="Aguardando" value={blocked} icon={AlertCircle} />
       </div>
 
-      <div
-        className="grid grid-cols-1 lg:grid-cols-4 gap-6 animate-fade-in-up"
-        style={{ animationDelay: '400ms' }}
-      >
-        <ProductivityChart />
+      <ProductivityChart />
 
-        {(currentUser?.role === 'manager' || currentUser?.role === 'director') && (
-          <Card className="col-span-full lg:col-span-1">
-            <CardHeader>
-              <CardTitle className="text-lg">Atenção da Equipe</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {teamBlocked.map((d) => {
-                const config = STATUS_CONFIG[d.status]
-                return (
-                  <div key={d.id} className="flex flex-col space-y-1 p-3 bg-muted/50 rounded-lg">
-                    <span className="text-sm font-medium line-clamp-1">{d.title}</span>
-                    <div className="flex justify-between items-center mt-2">
-                      <Badge
-                        variant="secondary"
-                        className={cn('text-[10px] border', config.badgeClass)}
-                      >
-                        {config.emoji} {config.label}
-                      </Badge>
-                    </div>
+      {subordinates.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">
+              {isDirector ? 'Gerentes Supervisionados' : 'Analistas da Equipe'}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {subordinates.map((user) => {
+              const userDemands = demands.filter((d) => d.assigneeId === user.id)
+              const done = userDemands.filter((d) => d.status === 'concluido').length
+              const progress =
+                userDemands.length === 0 ? 0 : Math.round((done / userDemands.length) * 100)
+              return (
+                <Link
+                  key={user.id}
+                  to="/team"
+                  className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors"
+                >
+                  <Avatar className="w-10 h-10">
+                    <AvatarImage src={user.avatarUrl} />
+                    <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1">
+                    <p className="font-medium text-sm">{user.name}</p>
+                    <p className="text-xs text-muted-foreground">{roleLabels[user.role]}</p>
                   </div>
-                )
-              })}
-              {teamBlocked.length === 0 && (
-                <p className="text-sm text-muted-foreground text-center py-4">
-                  Nenhum bloqueio na equipe.
-                </p>
-              )}
-            </CardContent>
-          </Card>
-        )}
-      </div>
+                  <div className="hidden sm:flex items-center gap-3 w-40">
+                    <Progress value={progress} className="h-2" />
+                    <Badge variant={progress === 100 ? 'default' : 'secondary'} className="text-xs">
+                      {progress}%
+                    </Badge>
+                  </div>
+                </Link>
+              )
+            })}
+          </CardContent>
+        </Card>
+      )}
+
+      {!isDirector && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Demandas Recentes</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {relevantDemands.slice(0, 5).map((demand) => (
+              <Link
+                key={demand.id}
+                to="/demands"
+                className="flex items-center justify-between py-2 border-b last:border-0 hover:bg-muted/30 -mx-2 px-2 rounded transition-colors"
+              >
+                <span className="text-sm font-medium line-clamp-1">{demand.title}</span>
+                <Badge variant="secondary" className="text-xs ml-2 shrink-0">
+                  {demand.status}
+                </Badge>
+              </Link>
+            ))}
+            {relevantDemands.length === 0 && (
+              <p className="text-sm text-muted-foreground text-center py-4">
+                Nenhuma demanda encontrada.
+              </p>
+            )}
+          </CardContent>
+        </Card>
+      )}
     </div>
   )
 }

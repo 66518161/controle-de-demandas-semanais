@@ -10,15 +10,16 @@ export interface User {
   role: Role
   avatarUrl?: string
   managerId?: string
+  microsoftId?: string
 }
 
-export interface ChatMessage {
+export interface Comment {
   id: string
-  role: 'user' | 'assistant'
-  content: string
+  demandId: string
+  authorId: string
+  authorName: string
+  text: string
   timestamp: string
-  parsedTasks?: ParsedTask[]
-  confirmed?: boolean
 }
 
 export interface ParsedTask {
@@ -38,6 +39,16 @@ export interface Demand {
   dueDate: string
   assigneeId: string
   createdAt: string
+  comments?: Comment[]
+}
+
+export interface ChatMessage {
+  id: string
+  role: 'user' | 'assistant'
+  content: string
+  timestamp: string
+  parsedTasks?: ParsedTask[]
+  confirmed?: boolean
 }
 
 export interface ChartData {

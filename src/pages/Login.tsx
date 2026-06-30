@@ -10,11 +10,23 @@ import { toast } from '@/hooks/use-toast'
 
 export default function Login() {
   const navigate = useNavigate()
-  const { login, theme, toggleTheme } = useAppStore()
+  const { login, microsoftLogin, theme, toggleTheme } = useAppStore()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+
+  const handleMicrosoftLogin = () => {
+    setIsLoading(true)
+    setTimeout(() => {
+      const success = microsoftLogin()
+      setIsLoading(false)
+      if (success) {
+        toast({ title: 'Bem-vindo!', description: 'Login com Microsoft realizado com sucesso.' })
+        navigate('/')
+      }
+    }, 800)
+  }
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
@@ -110,6 +122,30 @@ export default function Login() {
                 )}
               </Button>
             </form>
+
+            <div className="relative my-4">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-border" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground">ou</span>
+              </div>
+            </div>
+
+            <Button
+              variant="outline"
+              className="w-full gap-2"
+              onClick={handleMicrosoftLogin}
+              disabled={isLoading}
+            >
+              <svg className="w-5 h-5" viewBox="0 0 23 23" fill="none">
+                <path d="M1 1h10v10H1z" fill="#f25022" />
+                <path d="M12 1h10v10H12z" fill="#7fba00" />
+                <path d="M1 12h10v10H1z" fill="#00a4ef" />
+                <path d="M12 12h10v10H12z" fill="#ffb900" />
+              </svg>
+              Entrar com Microsoft
+            </Button>
 
             <div className="mt-6 p-4 bg-muted/50 rounded-lg border border-border">
               <p className="text-xs font-semibold text-muted-foreground mb-2">

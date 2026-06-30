@@ -9,6 +9,7 @@ import MyDemands from './pages/MyDemands'
 import TeamDemands from './pages/TeamDemands'
 import ChatPage from './pages/Chat'
 import Profile from './pages/Profile'
+import Admin from './pages/Admin'
 import NotFound from './pages/NotFound'
 import Layout from './components/Layout'
 
@@ -31,6 +32,7 @@ const App = () => (
           <Route path="/team" element={<TeamDemands />} />
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/admin" element={<Admin />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

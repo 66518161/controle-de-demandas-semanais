@@ -5,10 +5,10 @@ import {
   SheetTitle,
   SheetDescription,
 } from '@/components/ui/sheet'
-import { Demand, Status } from '@/lib/types'
+import { Demand, Status, Priority } from '@/lib/types'
 import { useAppStore } from '@/stores/use-app-store'
 import { Badge } from '@/components/ui/badge'
-import { Calendar, User, Clock, AlertTriangle } from 'lucide-react'
+import { Calendar, User, Clock, AlertTriangle, Flag } from 'lucide-react'
 import {
   Select,
   SelectContent,
@@ -17,16 +17,33 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { STATUS_CONFIG, STATUS_ORDER } from '@/lib/status-config'
+import { DemandComments } from './DemandComments'
 import { cn } from '@/lib/utils'
+
+const PRIORITY_LABELS: Record<Priority, string> = {
+  low: 'Baixa',
+  medium: 'Média',
+  high: 'Alta',
+}
 
 interface DemandDrawerProps {
   demand: Demand | null
   open: boolean
   onOpenChange: (open: boolean) => void
+  canEditStatus?: boolean
+  canEditPriority?: boolean
+  canComment?: boolean
 }
 
-export function DemandDrawer({ demand, open, onOpenChange }: DemandDrawerProps) {
-  const { updateDemandStatus, users } = useAppStore()
+export function DemandDrawer({
+  demand,
+  open,
+  onOpenChange,
+  canEditStatus = true,
+  canEditPriority = false,
+  canComment = true,
+}: DemandDrawerProps) {
+  const { updateDemandStatus, updateDemandPriority, users } = useAppStore()
 
   if (!demand) return null
 
@@ -38,7 +55,7 @@ export function DemandDrawer({ demand, open, onOpenChange }: DemandDrawerProps) 
       <SheetContent className="w-full sm:max-w-md overflow-y-auto">
         <SheetHeader className="mb-6">
           <div className="flex items-center gap-2 mb-2">
-            <Badge variant="outline">{demand.priority.toUpperCase()}</Badge>
+            <Badge variant="outline">{PRIORITY_LABELS[demand.priority].toUpperCase()}</Badge>
             <Badge
               variant="secondary"
               className={cn('hover:bg-transparent border', statusConfig.badgeClass)}
@@ -77,26 +94,51 @@ export function DemandDrawer({ demand, open, onOpenChange }: DemandDrawerProps) 
             </div>
           </div>
 
-          <div className="space-y-2 border-t pt-4">
-            <h4 className="text-sm font-semibold flex items-center gap-2">
-              <Clock className="w-4 h-4" /> Atualizar Status
-            </h4>
-            <Select
-              value={demand.status}
-              onValueChange={(val: Status) => updateDemandStatus(demand.id, val)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione o status" />
-              </SelectTrigger>
-              <SelectContent>
-                {STATUS_ORDER.map((status) => (
-                  <SelectItem key={status} value={status}>
-                    {STATUS_CONFIG[status].emoji} {STATUS_CONFIG[status].label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {canEditStatus && (
+            <div className="space-y-2 border-t pt-4">
+              <h4 className="text-sm font-semibold flex items-center gap-2">
+                <Clock className="w-4 h-4" /> Atualizar Status
+              </h4>
+              <Select
+                value={demand.status}
+                onValueChange={(val: Status) => updateDemandStatus(demand.id, val)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o status" />
+                </SelectTrigger>
+                <SelectContent>
+                  {STATUS_ORDER.map((status) => (
+                    <SelectItem key={status} value={status}>
+                      {STATUS_CONFIG[status].emoji} {STATUS_CONFIG[status].label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          {canEditPriority && (
+            <div className="space-y-2 border-t pt-4">
+              <h4 className="text-sm font-semibold flex items-center gap-2">
+                <Flag className="w-4 h-4" /> Prioridade
+              </h4>
+              <Select
+                value={demand.priority}
+                onValueChange={(val: Priority) => updateDemandPriority(demand.id, val)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione a prioridade" />
+                </SelectTrigger>
+                <SelectContent>
+                  {(['low', 'medium', 'high'] as Priority[]).map((p) => (
+                    <SelectItem key={p} value={p}>
+                      {PRIORITY_LABELS[p]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           {demand.status === 'aguardando' && (
             <div className="bg-danger/10 text-danger-foreground p-3 rounded-lg flex gap-3 items-start">
@@ -106,6 +148,14 @@ export function DemandDrawer({ demand, open, onOpenChange }: DemandDrawerProps) 
               </p>
             </div>
           )}
+
+          <div className="border-t pt-4">
+            <DemandComments
+              demandId={demand.id}
+              comments={demand.comments || []}
+              canComment={canComment}
+            />
+          </div>
         </div>
       </SheetContent>
     </Sheet>
