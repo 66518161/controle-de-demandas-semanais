@@ -51,7 +51,7 @@ export default function Profile() {
           <div className="mt-8 pt-6 border-t border-border flex justify-end">
             <Button
               variant="ghost"
-              className="text-destructive hover:bg-destructive/10"
+              className="text-foreground hover:bg-muted"
               onClick={handleLogout}
             >
               <LogOut className="w-4 h-4 mr-2" /> Sair da Conta
