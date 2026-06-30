@@ -25,12 +25,18 @@ interface AppState {
   deleteUser: (id: string) => void
 }
 
+const getInitialTheme = (): 'light' | 'dark' => {
+  if (typeof window === 'undefined') return 'dark'
+  const stored = localStorage.getItem('demandflow-theme')
+  return stored === 'light' ? 'light' : 'dark'
+}
+
 export const useAppStore = create<AppState>((set) => ({
   currentUser: null,
   isAuthenticated: false,
   users: MOCK_USERS,
   demands: MOCK_DEMANDS,
-  theme: 'dark',
+  theme: getInitialTheme(),
   chatMessages: [],
 
   login: (email, password) => {

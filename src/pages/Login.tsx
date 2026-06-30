@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Mail, Lock, Loader2, Eye, EyeOff } from 'lucide-react'
+import { LayoutDashboard, Mail, Lock, Loader2, Eye, EyeOff, Moon, Sun } from 'lucide-react'
 import { useAppStore } from '@/stores/use-app-store'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -49,12 +49,14 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4 relative">
-      <button
+      <Button
+        variant="ghost"
+        size="icon"
         onClick={toggleTheme}
-        className="absolute top-4 right-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        className="absolute top-4 right-4 rounded-full"
       >
-        {theme === 'dark' ? '☀️ Claro' : '🌙 Escuro'}
-      </button>
+        {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+      </Button>
 
       <div className="w-full max-w-md animate-fade-in-up">
         <div className="flex flex-col items-center mb-8">
