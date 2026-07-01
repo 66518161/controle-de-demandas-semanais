@@ -21,9 +21,8 @@ export function Navigation({ isMobile = false }: { isMobile?: boolean }) {
       name: 'Admin',
       href: '/admin',
       icon: Shield,
-      visible: currentUser?.role === 'director' || currentUser?.role === 'admin',
+      visible: currentUser?.adm === true,
     },
-    { name: 'Perfil', href: '/profile', icon: UserCircle, visible: true },
   ]
 
   const visibleItems = navItems.filter((item) => item.visible)

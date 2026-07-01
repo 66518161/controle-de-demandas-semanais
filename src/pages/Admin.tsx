@@ -7,8 +7,11 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { Plus, Pencil, Trash2, Users, Network } from 'lucide-react'
+import { Plus, Pencil, Trash2, Users, Network, Sparkles } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import { User, Role } from '@/lib/types'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Label } from '@/components/ui/label'
 
 const ROLE_LABELS: Record<Role, string> = {
   analyst: 'Analista',
@@ -27,8 +30,37 @@ export default function Admin() {
   const { users, deleteUser, currentUser } = useAppStore()
   const [editingUser, setEditingUser] = useState<User | null>(null)
   const [showForm, setShowForm] = useState(false)
+  const [isConsolidating, setIsConsolidating] = useState(false)
+  const [consolidationStatus, setConsolidationStatus] = useState<string | null>(null)
+  const [selectedLeaderId, setSelectedLeaderId] = useState<string>('all')
 
-  if (currentUser?.role !== 'director' && currentUser?.role !== 'admin') {
+  const leaders = users.filter((u) => u.role === 'manager' || u.role === 'director')
+
+  const handleTriggerConsolidation = async () => {
+    setIsConsolidating(true)
+    setConsolidationStatus('Disparando consolidação via LLM...')
+    try {
+      const res = await fetch('/api/consolidation/trigger', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          idSuperior: selectedLeaderId === 'all' ? undefined : parseInt(selectedLeaderId, 10),
+        }),
+      })
+      if (res.ok) {
+        setConsolidationStatus('Sucesso: Relatório Executivo Semanal gerado e salvo com sucesso!')
+      } else {
+        const errData = await res.json()
+        setConsolidationStatus(`Erro ao consolidar: ${errData.error || 'Falha no servidor.'}`)
+      }
+    } catch (err) {
+      setConsolidationStatus('Erro ao conectar com a API de consolidação.')
+    } finally {
+      setIsConsolidating(false)
+    }
+  }
+
+  if (currentUser?.adm !== true) {
     return (
       <div className="text-center py-12 text-muted-foreground">
         Acesso restrito a diretores e administradores.
@@ -62,6 +94,10 @@ export default function Admin() {
           <TabsTrigger value="hierarchy">
             <Network className="w-4 h-4 mr-2" />
             Hierarquia
+          </TabsTrigger>
+          <TabsTrigger value="consolidation">
+            <Sparkles className="w-4 h-4 mr-2" />
+            Consolidação LLM
           </TabsTrigger>
         </TabsList>
 
@@ -107,6 +143,45 @@ export default function Admin() {
 
         <TabsContent value="hierarchy" className="mt-4">
           <HierarchyManager />
+        </TabsContent>
+
+        <TabsContent value="consolidation" className="mt-4">
+          <Card className="p-6 space-y-4">
+            <div>
+              <h3 className="font-semibold text-lg">Consolidar Demandas Executivas</h3>
+              <p className="text-sm text-muted-foreground font-normal">
+                Gere e salve manualmente o relatório de demandas semanais do time para a semana atual através da inteligência artificial do OpenRouter.
+              </p>
+            </div>
+            <div className="space-y-2 max-w-xs">
+              <Label htmlFor="leader-select" className="text-xs font-semibold text-muted-foreground uppercase">
+                Líder Destinatário
+              </Label>
+              <Select value={selectedLeaderId} onValueChange={setSelectedLeaderId}>
+                <SelectTrigger id="leader-select" className="h-9">
+                  <SelectValue placeholder="Selecione um líder..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os líderes (Padrão)</SelectItem>
+                  {leaders.map((leader) => (
+                    <SelectItem key={leader.id} value={leader.id}>
+                      {leader.name} ({ROLE_LABELS[leader.role]})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex items-center gap-4 pt-2">
+              <Button onClick={handleTriggerConsolidation} disabled={isConsolidating} className="gap-2">
+                {isConsolidating ? 'Consolidando...' : 'Gerar Relatório Executivo Semanal'}
+              </Button>
+            </div>
+            {consolidationStatus && (
+              <p className={cn("text-sm font-medium", consolidationStatus.startsWith('Erro') ? 'text-destructive' : 'text-emerald-500')}>
+                {consolidationStatus}
+              </p>
+            )}
+          </Card>
         </TabsContent>
       </Tabs>
 

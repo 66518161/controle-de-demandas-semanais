@@ -56,12 +56,10 @@ export default function Index() {
 
       <ProductivityChart />
 
-      {subordinates.length > 0 && (
+      {subordinates.length > 0 && isDirector && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">
-              {isDirector ? 'Gerentes Supervisionados' : 'Analistas da Equipe'}
-            </CardTitle>
+            <CardTitle className="text-lg">Gerentes Supervisionados</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 max-h-80 overflow-y-auto">
             {subordinates.map((user) => {

@@ -11,6 +11,7 @@ export interface User {
   avatarUrl?: string
   managerId?: string
   microsoftId?: string
+  adm?: boolean
 }
 
 export interface Comment {
@@ -39,7 +40,10 @@ export interface Demand {
   dueDate: string
   assigneeId: string
   createdAt: string
+  week?: number
+  year?: number
   comments?: Comment[]
+  comentarioNotificado?: boolean
 }
 
 export interface ChatMessage {
@@ -49,6 +53,12 @@ export interface ChatMessage {
   timestamp: string
   parsedTasks?: ParsedTask[]
   confirmed?: boolean
+  suggestedActions?: {
+    type: 'update_status'
+    taskId: string
+    taskTitle: string
+    currentStatus: Status
+  }[]
 }
 
 export interface ChartData {

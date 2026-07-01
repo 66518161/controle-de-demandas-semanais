@@ -1,0 +1,138 @@
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["views"]
+}
+
+model Cargo {
+  IdCargo  Int       @id @default(autoincrement())
+  Nome     String    @db.VarChar(50)
+  Usuarios Usuario[]
+
+  @@map("Cargos")
+}
+
+model Usuario {
+  IdUsuario      Int                 @id @default(autoincrement())
+  Nome           String?             @db.VarChar(100)
+  MicrosoftID    String?             @db.VarChar(150)
+  TeamsID        String?             @db.VarChar(100)
+  Telefone       String?             @db.VarChar(20)
+  Cargo          String?             @db.VarChar(30)
+  IdCargo        Int?
+  Status         String?             @default("Ativo") @db.VarChar(20)
+  DataCadastro   DateTime?           @default(now()) @db.DateTime
+  ConversationID String?             @db.VarChar(255)
+  Email          String?             @db.VarChar(255)
+  Departamento   String?             @db.VarChar(255)
+  Senha          String?             @db.VarChar(255)
+  Adm            Boolean?            @db.Bit
+  CargoRef       Cargo?              @relation(fields: [IdCargo], references: [IdCargo], onUpdate: NoAction, onDelete: NoAction)
+  Reportes       Reporte[]
+  Subordinados   HierarquiaReporte[] @relation("Subordinado")
+  Superiores     HierarquiaReporte[] @relation("Superior")
+
+  @@map("Usuarios")
+}
+
+model Reporte {
+  IdReporte        Int                @id @default(autoincrement())
+  IdUsuario        Int
+  DataRegistro     DateTime?          @default(now()) @db.DateTime
+  TextoOriginal    String             @db.NVarChar(Max)
+  CanalOrigem      String?            @db.VarChar(20)
+  FoiConsolidado   Boolean?           @default(false)
+  DataConsolidacao DateTime?          @db.DateTime
+  Usuario          Usuario            @relation(fields: [IdUsuario], references: [IdUsuario], onDelete: Cascade, onUpdate: NoAction)
+  Tarefas          TarefaReportada[]
+
+  @@map("Reportes")
+}
+
+model TarefaReportada {
+  IdTarefa            Int       @id @default(autoincrement())
+  IdReporte           Int
+  DescricaoTarefa     String    @db.NVarChar(255)
+  StatusTarefa        String    @db.VarChar(50)
+  ComentarioDiretor   String?   @db.NVarChar(1000)
+  DataComentario      DateTime? @db.DateTime
+  FoiConsolidada      Boolean   @default(false)
+  ComentarioNotificado Boolean   @default(false)
+  Semana              Int?
+  Ano                 Int?
+  OrdemPrioridade     Int?
+  Reporte             Reporte   @relation(fields: [IdReporte], references: [IdReporte], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("TarefasReportadas")
+}
+
+model HierarquiaReporte {
+  IdHierarquia   Int       @id @default(autoincrement())
+  IdColaborador  Int
+  IdSuperior     Int
+  DataVinculo    DateTime? @default(now()) @db.DateTime
+  Colaborador    Usuario   @relation("Subordinado", fields: [IdColaborador], references: [IdUsuario], onDelete: NoAction, onUpdate: NoAction)
+  Superior       Usuario   @relation("Superior", fields: [IdSuperior], references: [IdUsuario], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("HierarquiaReporte")
+}
+
+view v_HierarquiaReporte {
+  IdHierarquia             Int     @unique
+  IdColaborador            Int
+  NomeColaborador          String? @db.VarChar(100)
+  EmailColaborador         String? @db.VarChar(255)
+  IdCargoColaborador       Int?
+  CargoColaborador         String? @db.VarChar(50)
+  MicrosoftIDColaborador   String? @db.VarChar(150)
+  ConversationIDColaborador String? @db.VarChar(255)
+  StatusColaborador        String? @db.VarChar(20)
+  IdSuperior               Int
+  NomeSuperior             String? @db.VarChar(100)
+  EmailSuperior            String? @db.VarChar(255)
+  IdCargoSuperior          Int?
+  CargoSuperior            String? @db.VarChar(50)
+  MicrosoftIDSuperior      String? @db.VarChar(150)
+  ConversationIDSuperior   String? @db.VarChar(255)
+  StatusSuperior           String? @db.VarChar(20)
+}
+
+view v_TarefasPendentes {
+  IdTarefa             Int       @unique
+  IdReporte            Int
+  DescricaoTarefa      String    @db.NVarChar(255)
+  StatusTarefa         String    @db.VarChar(50)
+  ComentarioDiretor    String?   @db.NVarChar(1000)
+  DataComentario       DateTime? @db.DateTime
+  DataRegistro         DateTime? @db.DateTime
+  IdUsuario            Int
+  NomeUsuario          String?   @db.VarChar(100)
+  MicrosoftIDUsuario   String?   @db.VarChar(150)
+  TeamsIDUsuario       String?   @db.VarChar(100)
+  EmailUsuario         String?   @db.VarChar(255)
+  IdResponsavel        Int?
+  NomeResponsavel      String?   @db.VarChar(100)
+  EmailResponsavel     String?   @db.VarChar(255)
+}
+
+view v_TarefasFinalizadas {
+  IdTarefa             Int       @unique
+  IdReporte            Int
+  DescricaoTarefa      String    @db.NVarChar(255)
+  StatusTarefa         String    @db.VarChar(50)
+  ComentarioDiretor    String?   @db.NVarChar(1000)
+  DataComentario       DateTime? @db.DateTime
+  DataRegistro         DateTime? @db.DateTime
+  IdUsuario            Int
+  NomeUsuario          String?   @db.VarChar(100)
+  MicrosoftIDUsuario   String?   @db.VarChar(150)
+  TeamsIDUsuario       String?   @db.VarChar(100)
+  EmailUsuario         String?   @db.VarChar(255)
+  IdResponsavel        Int?
+  NomeResponsavel      String?   @db.VarChar(100)
+  EmailResponsavel     String?   @db.VarChar(255)
+}

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Autenticando...</title>
+    <!-- Carrega a ponte de redirecionamento oficial do MSAL para popups/iframes -->
+    <script src="/msal-redirect-bridge.min.js"></script>
+  </head>
+  <body>
+    <p style="font-family: sans-serif; text-align: center; margin-top: 50px; color: #666;">
+      Processando autenticação... Por favor, aguarde.
+    </p>
+    <script>
+      async function runBridge() {
+        try {
+          if (window.msalRedirectBridge && typeof window.msalRedirectBridge.broadcastResponseToMainFrame === 'function') {
+            await window.msalRedirectBridge.broadcastResponseToMainFrame();
+          } else {
+            console.error('Biblioteca msalRedirectBridge não foi carregada no escopo global.');
+          }
+        } catch (error) {
+          console.error('Erro na ponte de autenticação do MSAL:', error);
+        }
+      }
+      runBridge();
+    </script>
+  </body>
+</html>
