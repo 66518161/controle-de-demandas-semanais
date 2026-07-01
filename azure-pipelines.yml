@@ -30,7 +30,7 @@ steps:
 - script: npm run build
   displayName: 'Build do frontend (Vite)'
 
-# 6. Remover devDependencies e node_modules desnecessários para reduzir o pacote
+# 6. Remover devDependencies para reduzir o pacote
 - script: |
     npm prune --production
     npm --prefix server prune --production
