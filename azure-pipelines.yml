@@ -1,0 +1,44 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '20.x'
+  displayName: 'Instalar Node.js'
+
+# 1. Instalação de dependências (frontend, backend e Prisma) e compilação do React
+- script: |
+    npm install
+    npm run build
+  displayName: 'npm install and build'
+
+# 2. Compactar o projeto em um arquivo ZIP (ignorando o que não precisa ir)
+- task: ArchiveFiles@2
+  displayName: 'Empacotar projeto (ZIP)'
+  inputs:
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    replaceExistingArchive: true
+
+# 3. Publicar o arquivo compactado nos artefatos da Pipeline
+- task: PublishBuildArtifacts@1
+  displayName: 'Publicar artefato de compilação'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+
+# 4. Enviar o ZIP compactado para o Azure App Service
+# Nota: Substitua pelos dados do seu recurso no Azure
+- task: AzureWebApp@1
+  displayName: 'Realizar deploy no Azure App Service'
+  inputs:
+    azureSubscription: 'NOME_DA_SUA_CONEXAO_DE_SERVICO' # Nome da service connection criada no Azure DevOps
+    appName: 'NOME_DO_SEU_WEB_APP'                     # Nome do seu Web App no portal do Azure
+    package: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
