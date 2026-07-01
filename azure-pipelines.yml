@@ -1,0 +1,64 @@
+# Pipeline de Build e Deploy - Controle de Demandas Semanais V2
+# Dispara automaticamente ao fazer push na branch main
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+# 1. Instalar Node.js 20 LTS
+- task: NodeTool@0
+  inputs:
+    versionSpec: '20.x'
+  displayName: 'Instalar Node.js 20 LTS'
+
+# 2. Instalar dependências do frontend (raiz)
+- script: npm install
+  displayName: 'Instalar dependências do frontend'
+
+# 3. Instalar dependências do backend (server/)
+- script: npm --prefix server install
+  displayName: 'Instalar dependências do backend'
+
+# 4. Gerar o Prisma Client v5 (usando a CLI local do server)
+- script: npx --prefix server prisma generate --schema=server/prisma/schema.prisma
+  displayName: 'Gerar Prisma Client'
+
+# 5. Compilar o frontend React com Vite
+- script: npm run build
+  displayName: 'Build do frontend (Vite)'
+
+# 6. Remover devDependencies e node_modules desnecessários para reduzir o pacote
+- script: |
+    npm prune --production
+    npm --prefix server prune --production
+  displayName: 'Remover devDependencies'
+
+# 7. Compactar todo o projeto em ZIP para deploy
+- task: ArchiveFiles@2
+  displayName: 'Compactar projeto (ZIP)'
+  inputs:
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    replaceExistingArchive: true
+
+# 8. Publicar artefato de build
+- task: PublishBuildArtifacts@1
+  displayName: 'Publicar artefato'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+
+# 9. Deploy no Azure App Service
+- task: AzureWebApp@1
+  displayName: 'Deploy no Azure App Service'
+  inputs:
+    azureSubscription: '$(AZURE_SUBSCRIPTION)'
+    appName: 'reporte-semanal'
+    package: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    runtimeStack: 'NODE|20-lts'

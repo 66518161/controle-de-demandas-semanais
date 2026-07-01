@@ -10,6 +10,9 @@ import taskRoutes from './routes/taskRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
 import consolidationRoutes from './routes/consolidationRoutes.js';
 
+// Em produção (Azure), as variáveis vêm das Application Settings.
+// Em dev local, o dotenv carrega do .env na raiz do projeto.
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 dotenv.config({ path: path.resolve(process.cwd(), '../.env') });
 
 const __filename = fileURLToPath(import.meta.url);
